@@ -1,0 +1,99 @@
+{% extends 'myapp/base.html' %}
+{% load markdown_extras %}
+{% block content %}    
+    <h3>สินค้าทั้งหมดในร้าน</h3>
+    <p>เรามีสินค้าให้บริการหลายรายการ</p>
+
+<div class="container-fluid">
+    <div class="row">
+    {% for pd in product %}
+    
+        <div class="col-sm-4" >
+
+                <div class="card"  width='400px' height='400px'>
+
+                                {% if pd.image %}
+                                <img class="card-img-top" src="{{ pd.image.url }}" alt="Card image" width="400" height="400">
+                                {% elif pd.imageurl %}
+                                <img class="card-img-top" src="{{ pd.imageurl }}" alt="Card image" width="400" height="400">
+                                {% else %}
+                                
+                                <img class="card-img-top" src="/media/default-image.png" alt="Card image" width="400" height="400">
+                                {% endif %}
+                        
+                        <div class="card-body">
+                                <h4 class="card-title">  {{ pd.name }}   </h4>
+                                <p class="card-text">   ราคา {{ pd.price }} บาท/{{pd.unit}} </p>
+                                <p class="card-text">    {{ pd.detail|markdown|safe|truncatechars_html:100 }} 
+                                    <a href="{% url 'detail-page' pd.id  %}" target="blank" class="btn btn-primary" >รายละเอียด</a>
+                                </p>
+                                <!--/  |truncatechars_html:70 กำหนดคำว่าใช้ได้กี่คำ   /-->
+
+                                {% if pd.quantity > 0 and pd.instock == True %}
+
+                                    {% if user.is_authenticated %}
+                                        <p>สินค้าในสต็อก : {{ pd.quantity }} {{pd.unit}}</p>
+                                        <a href="{% url 'addtocart-page' pd.id  %}" class="btn btn-success">สั่งซื้อสินค้า</a>
+                                    {% else %}
+                                        <p>สินค้าในสต็อก : {{ pd.quantity }} {{pd.unit}}</p>
+                                        <a href="{% url 'login' %}" class="btn btn-primary">กรุณาเข้าสู่ระบบ</a>                                    
+                                    {% endif %}
+                                {% else %}
+                                    
+                                    <a href="#" class="btn btn-danger">Preorder</a>
+                                {% endif %}
+                                
+                                {% if user.is_authenticated and user.profile.usertype == 'admin' %}
+                                <a href="{% url 'editproduct-page' pd.id %}" class="btn btn-warning">แก้ไขสินค้า</a>
+                                {% endif %}               
+                        </div>
+                </div>
+                            <br><br>
+        
+        </div>
+    {% endfor %}
+    </div>
+</div>
+    <br>
+
+    <ul class="pagination">
+        {% if product.has_next and product.has_previous != True %}
+            <li class="page-item active"><a class="page-link" href="?page={{product.number}}">{{product.number}}</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{product.number|add:1}}">{{product.number|add:1}}</a></li> 
+            <li class="page-item"><a class="page-link" href="?page={{product.number|add:2}}">{{product.number|add:2}}</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{product.next_page_number}}">></a></li>
+            <li class="page-item "><a class="page-link" href="?page={{product.paginator.num_pages}}">>></a></li>
+            
+        {% endif %}
+
+        {% if product.has_previous and product.has_next %}
+            <li class="page-item "><a class="page-link" href="?page=1"><<</a></li> 
+            <li class="page-item"><a class="page-link" href="?page={{product.previous_page_number}}"> < </a></li>
+            <li class="page-item"><a class="page-link" href="?page={{product.number|add:-1}}">{{product.number|add:-1}}</a></li>
+            <li class="page-item active"><a class="page-link" href="?page={{product.number}}">{{product.number}}</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{product.number|add:1}}">{{product.number|add:1}}</a></li>               
+            <li class="page-item"><a class="page-link" href="?page={{product.next_page_number}}">></a></li>  
+            <li class="page-item "><a class="page-link" href="?page={{product.paginator.num_pages}}">>></a></li>  
+        {% endif %}
+
+
+        {% if product.has_previous and product.has_next != True %}
+            <li class="page-item "><a class="page-link" href="?page=1"><<</a></li> 
+            <li class="page-item"><a class="page-link" href="?page={{product.previous_page_number}}"> < </a></li>
+            <li class="page-item"><a class="page-link" href="?page={{product.number|add:-2}}">{{product.number|add:-2}}</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{product.number|add:-1}}">{{product.number|add:-1}}</a></li>
+            <li class="page-item active"><a class="page-link" href="?page={{product.number}}">{{product.number}}</a></li>           
+        {% endif %}
+
+    </ul> <p> page {{product.number}} of {{product.paginator.num_pages}} </p>
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+

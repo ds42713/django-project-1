@@ -1,0 +1,95 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+  <div class="container" style="margin-bottom: 100px;">
+    <h2>แก้ไขรายละเอียดสินค้า : {{product.name}}</h2>
+    <p>คุณสามารถแก้ไขรายละเอียดสินค้าเข้าไปในระบบได้</p>
+
+    {% if product.image %}
+    <img src="{{ product.image.url }}" width="400" >
+    {% elif product.imageurl %}
+    <img src="{{ product.imageurl }}"  width="400" >
+    {% else %}
+    <img class="card-img-top" src="/media/default-image.png"  width="400" >
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data"> 
+      <!--/  ถ้าเกี่ยวข้องกับไฟล์ต้องใส่ enctype="multipart/form-data"   /-->
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="name">ชื่อสินค้า :</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{product.name}}">
+      </div>
+      
+      <div>
+        <label for="category">ประเภทสินค้า :</label>
+          <select class="form-control" id="category" name="category">
+            {% for ct in category %}
+                {% if ct.catname == product.catname.catname %}
+                    <option selected="selected">{{ct.catname}}</option>
+                {% else %}
+                    <option>{{ct.catname}}</option>
+                {% endif %}
+            {% endfor %}
+          </select>
+      </div>
+
+      <div class="form-group">
+        <label for="price">ราคา(บาท) :</label>
+        <input type="text" class="form-control" id="price" name="price" value="{{product.price}}">
+      </div>
+
+      <div class="form-group">
+        <label for="detail">รายละเอียด :</label>
+        <textarea class="form-control" rows="5" id="detail" name="detail">{{product.detail}}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="imageurl">URL รูปสินค้า :</label>
+        <input type="text" class="form-control" id="imageurl" name="imageurl" value="{{product.imageurl}}" >
+      </div>
+
+      <div class="form-group">
+        <p>มีในสต็อกหรือไม่ :</p>
+
+        {% if product.instock %}
+        <input type="radio" id="instock_true" name="instock" value="instock_true" checked>
+        <label for="male">มีในสต็อก</label><br>
+        <input type="radio" id="instock_false" name="instock" value="instock_false">
+        <label for="female">หมดในสต็อก</label><br>
+        {% else %}
+        <input type="radio" id="instock_true" name="instock" value="instock_true" >
+        <label for="male">มีในสต็อก</label><br>
+        <input type="radio" id="instock_false" name="instock" value="instock_false" checked>
+        <label for="female">หมดในสต็อก</label><br>
+        {% endif %}
+
+      </div>
+
+      <div class="form-group">
+        <label for="quantity">จำนวนสินค้า:</label>
+        <input type="text" class="form-control" id="quantity" name="quantity" value="{{product.quantity}}">
+      </div>
+
+      <div class="form-group">
+        <label for="unit">หน่วยสินค้า:</label>
+        <input type="text" class="form-control" id="unit" name="unit" value="{{product.unit}}">
+      </div>
+
+      <div class="form-group">
+        <label for="imageupload">เลือกรูปของคุณ :</label>
+        <input type="file" class="form-control" id="imageupload" name="imageupload">
+      </div>
+      
+      
+
+      <button type="submit" class="btn btn-primary"  >
+        ยืนยัน
+      </button>
+    </form>
+    
+  </div>
+
+{% endblock content%}
+

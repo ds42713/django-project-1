@@ -1,0 +1,81 @@
+{% extends 'myapp/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+
+    {% if status == 'delete' %}
+        <div class="alert alert-danger">
+            <strong>ลบสินค้าเรียนร้อยแล้ว</strong> หากต้องการสินค้าเพิ่ม กรุณาสั่งซื้อใหม่ !!!
+        </div>
+    {% endif %}
+        <br>
+        <div class="container">
+            <h2>สินค้าที่สั่งซื้อทั้งหมด</h2>
+                    
+        <table class="table">
+              <thead>
+                <tr>
+                    <th>รหัสสินค้า</th>
+                    <th>เวลา</th>
+                    <th>ชื่อสินค้า</th>
+                    <th>ราคาต่อหน่วย</th>
+                    <th>จำนวนทั้งหมด</th>
+                    <th>ราคารวม</th>
+                    <th>ลบ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for pd in mycart %}
+                <tr>
+                    <td>{{pd.productid}}</td>
+                    <td>{{pd.stamp}}</td>
+                    <td>{{pd.productname}}</td>
+                    <td>{{pd.price|intcomma}} </td>
+                    <td>{{pd.quantity}}</td>
+                    <td>{{pd.total|intcomma}}</td>
+                    <td>                        
+                        <form method="POST" id="form{{pd.productid}}" onsubmit="return confirm('ยืนยันการลบ');" > 
+                            {% csrf_token %}
+                            <input type="hidden" name="productid" value="{{pd.productid}}">
+                            <button type="submit" form="form{{pd.productid}}" class="btn btn-danger">ลบ</button>
+                        </form>               
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><h5>ราคาทั้งหมด</h5></td>
+                    <td><h5>{{total|intcomma}}</h5></td>
+                    <td><h5>บาท</h5></td>
+                </tr>
+              </tbody>
+        </table>
+
+        <input type="hidden" name="productid">
+        
+                    <div class="row"> 
+                            <a href="{% url 'mycartedit-page' %}" class="btn btn-primary" >แก้ไขสินค้า</a>
+                            <div style="padding: 10px;"></div>
+                            <a href="{% url 'checkout-page' %}" class="btn btn-success" >Checkout</a>
+                    </div>
+          </div>
+          
+    
+        
+
+
+
+
+{% endblock content%}
+
+
+
+
+
+
+
+

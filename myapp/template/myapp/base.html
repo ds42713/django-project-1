@@ -1,0 +1,163 @@
+{% load costom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Mygame GameShop</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    #padding{
+      margin-bottom: 0px;
+    }
+    #footerpadding{
+      margin-left: 200px;
+    }
+  </style>
+  {% block header %}
+
+{% endblock header %}
+</head>
+
+
+<body>
+
+  <div class="jumbotron text-center" id='padding'>
+    <h1>My GameShop (example)</h1>
+  </div>
+
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark" >
+    <a class="navbar-brand" href="{% url 'home-page' %}">Mygame GameShop</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'allproduct-page' %}">สินค้าทั้งหมด <span class="badge badge-danger">{% show_allproduct %}</span></a> 
+            </li>                                           
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" 
+                      aria-expanded="false">ประเภทสินค้า
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                  {% all_category %}
+                </div>
+            </li>
+                    
+    {% if user.is_authenticated and user.profile.usertype == 'member' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'mycart-page' %}">
+                  ตระกร้า 
+                  <span class="badge badge-danger">{{user.profile.cartquan}}</span>
+                </a>      
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'orderlist-page' %}">
+                รายการสั่งซื้อ 
+              </a> 
+            </li>          
+    {% endif %}
+
+    {% if user.is_authenticated and user.profile.usertype == 'admin' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'mycart-page' %}">
+                  ตระกร้า <span class="badge badge-danger"> {{user.profile.cartquan}}</span>
+                </a>       
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'allorderlist-page' %}">
+                รายการสั่งซื้อ(Admin) 
+              </a> 
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'addproduct-page' %}">เพิ่มสินค้า</a>
+            </li> 
+    {% endif %}  
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about-page' %}">เกี่ยวกับเรา</a>       
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'contact-page' %}">ติดต่อเรา</a>
+              </li>                    
+        </ul>
+    {% if user.is_authenticated %}
+                <img src="{{user.profile.photo.url}}" alt="" width="40" height="40" class="rounded-circle">
+                <p style="color: white; margin: 10px;">สวัสดีคุณ&nbsp{{user.first_name}} {{user.last_name}} </p>
+                <a class="btn btn-primary" href="{% url 'logout' %}">ออกจากระบบ</a>                        
+    {% else %}
+                <a class="btn btn-primary" href="{% url 'register-page' %}">สมัครสมาชิก</a>&nbsp&nbsp&nbsp 
+                <a class="btn btn-primary" href="{% url 'login' %}">เข้าสู่ระบบ</a>
+    {% endif %}
+  
+                  
+    </div>  
+      
+  </nav>
+
+
+<div class="container">
+
+  {% if user.is_authenticated %}
+    {% if user.verifyemail.apprroved == False %}
+    <br>
+    <div class="alert alert-warning alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Warning!</strong> <p>สมัครสมาชิกไม่สำเร็จ  ขอรหัสอีกครั้ง   </p>
+    </div>
+    {% endif %}  
+  {% endif %}
+
+</div>
+
+
+<div class="container" style="margin-top: 30px ;" >
+    {% block content %}
+
+    {% endblock content%}
+</div>
+
+<footer class="pt-4 my-md-5 pt-md-5 border-top" id='footerpadding'>
+        <div class="row" >
+          <div class="col-6 col-md">
+            <h5>Features</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Cool stuff</a></li>
+              <li><a class="text-muted" href="#">Random feature</a></li>
+              <li><a class="text-muted" href="#">Team feature</a></li>
+              <li><a class="text-muted" href="#">Stuff for developers</a></li>
+              <li><a class="text-muted" href="#">Another one</a></li>
+              <li><a class="text-muted" href="#">Last time</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Resources</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Resource</a></li>
+              <li><a class="text-muted" href="#">Resource name</a></li>
+              <li><a class="text-muted" href="#">Another resource</a></li>
+              <li><a class="text-muted" href="#">Final resource</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>About</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Team</a></li>
+              <li><a class="text-muted" href="#">Locations</a></li>
+              <li><a class="text-muted" href="#">Privacy</a></li>
+              <li><a class="text-muted" href="#">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+
+    
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+
+    
+    <h3>ยืนยันการสมัครสมาชิก</h3>
+    <p>สมัครสมาชิกสำเร็จ</p>
+
+    {% if status == 'found' %}
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Success!</strong> <p>สมัครสมาชิกสำเร็จ</p>
+    </div>
+
+    {% else %}
+    <div class="alert alert-warning alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Warning!</strong> <p>สมัครสมาชิกไม่สำเร็จ</p>
+    </div>
+    {% endif %}
+
+{% endblock content%}
+
+
+
+
+
+
+
+

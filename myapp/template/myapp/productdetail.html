@@ -1,0 +1,33 @@
+{% extends 'myapp/base.html' %}
+{% load markdown_extras %}
+{% load humanize %}
+{% block content %}
+
+
+    
+    <h3>{{product.name}} ราคา {{product.price | intcomma}} บาท</h3>
+    {% if product.image %}
+    <img src="{{ product.image.url }}" width="400" >
+    {% elif product.imageurl %}
+    <img src="{{ product.imageurl }}"  width="400" >
+    {% else %}
+    <img class="card-img-top" src="/media/default-image.png"  width="400" >
+    {% endif %}
+    
+
+    <p> <h4>รายละเอียดสินค้า</h4>  
+        {{product.detail | markdown | safe}}
+    </p>
+    
+
+
+
+{% endblock content%}
+
+
+
+
+
+
+
+

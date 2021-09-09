@@ -1,0 +1,118 @@
+{% extends 'myapp/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+        <br>
+        <div class="container">
+            <h2>รายการสั่งซื้อทั้งหมด (admin)</h2>
+                     
+        <table class="table">
+              <thead>
+                <tr>
+                    <th>orderID</th>
+                    <th>เวลาสั่งซื้อ</th>                    
+
+                    <th>ราคาสินค้า</th>
+                    <th>ค่าส่ง</th>
+                    <th>ยอดโอน</th>
+                    <th>สลิป</th>
+                    <th>สถานะ</th>
+                    <th>Tracking</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for od in allorder %}
+                <tr>
+                    <td>{{od.orderid}} ({{od.name}})</td>
+                    <td>{{od.stamp}}</td>
+                    
+                    <td>{{od.total|intcomma}}</td>
+                    <td>{{od.shipcost|intcomma}}</td>
+                    <td>{{od.total|add:od.shipcost|intcomma}}</td>
+                    <td>
+                        {% if od.slip %}
+                            <a href="{{od.slip.url}}" target="_blank"> ดูสลิป</a>
+                            
+                        {% else %}
+                        <a class="btn btn-light" href="">
+                        <i class="fa fa-window-close" style="font-size:32px;color:red;"></i>   
+                      </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                          {% if od.paid %}
+                          <a class="btn btn-light" href="{% url 'updatestatus' od.orderid 'cancel' %}">
+                            <i class="fa fa-check-square" style="font-size:32px;color:green;"></i>
+                          </a>
+                          {% elif od.paid == False and not od.slip %}
+                          <a class="btn btn-light" href="">
+                          <i class="fa fa-window-close" style="font-size:32px;color:red;"></i> 
+                        </a>
+                          {% else %}
+                          <a class="btn btn-light" href="{% url 'updatestatus' od.orderid 'confirm' %}">
+                            <i class="fa fa-plus-square" style="font-size:16px;color:blue;"> ยืนยัน</i>
+                          </a>
+                          {% endif %}
+                    </td>
+                    <td>
+                      {% if od.trackingnumber != None%}
+                      {{od.trackingnumber}}
+                      {% else %}
+                      <a href="{% url 'updatetracking' od.orderid %}">
+                     อัพเดต
+                      </a>
+                      {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+        </table>
+
+
+          </div>
+ <br>
+ <ul class="pagination">
+  {% if allorder.has_next and allorder.has_previous != True %}
+      <li class="page-item active"><a class="page-link" href="?page={{allorder.number}}">{{allorder.number}}</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{allorder.number|add:1}}">{{allorder.number|add:1}}</a></li> 
+      <li class="page-item"><a class="page-link" href="?page={{allorder.number|add:2}}">{{allorder.number|add:2}}</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{allorder.next_page_number}}">หน้าถัดไป</a></li>
+      <li class="page-item "><a class="page-link" href="?page={{allorder.paginator.num_pages}}">หน้าสุดท้าย</a></li>
+      
+  {% endif %}
+
+  {% if allorder.has_previous and allorder.has_next %}
+      <li class="page-item "><a class="page-link" href="?page=1">หน้าแรก</a></li> 
+      <li class="page-item"><a class="page-link" href="?page={{allorder.previous_page_number}}">ย้อนกลับ</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{allorder.number|add:-1}}">{{allorder.number|add:-1}}</a></li>
+      <li class="page-item active"><a class="page-link" href="?page={{allorder.number}}">{{allorder.number}}</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{allorder.number|add:1}}">{{allorder.number|add:1}}</a></li>               
+      <li class="page-item"><a class="page-link" href="?page={{allorder.next_page_number}}">หน้าถัดไป</a></li>  
+      <li class="page-item "><a class="page-link" href="?page={{allorder.paginator.num_pages}}">หน้าสุดท้าย</a></li>  
+  {% endif %}
+
+
+  {% if allorder.has_previous and allorder.has_next != True %}
+      <li class="page-item "><a class="page-link" href="?page=1">หน้าแรก</a></li> 
+      <li class="page-item"><a class="page-link" href="?page={{allorder.previous_page_number}}">ย้อนกลับ</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{allorder.number|add:-2}}">{{allorder.number|add:-2}}</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{allorder.number|add:-1}}">{{allorder.number|add:-1}}</a></li>
+      <li class="page-item active"><a class="page-link" href="?page={{allorder.number}}">{{allorder.number}}</a></li>           
+  {% endif %}
+
+</ul> <p> page {{allorder.number}} of {{allorder.paginator.num_pages}} </p>         
+    
+
+
+
+
+{% endblock content%}
+
+
+
+
+
+
+
+
